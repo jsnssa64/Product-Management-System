@@ -8,15 +8,77 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Scripts\202210091216 - Create tables.sql" />
+    <None Remove="Environments\Dev\PostDeployment\0001 - Add Brands.sql" />
+    <None Remove="Environments\Dev\PostDeployment\0002 - Add Catergories.sql" />
+    <None Remove="Environments\Dev\PostDeployment\0003 - dbo.ProductTypes.sql" />
+    <None Remove="Environments\Dev\PostDeployment\0004 - dbo.ProductInfo.sql" />
+    <None Remove="Environments\Dev\PostDeployment\0005 - dbo.Products_ProductTypes.sql" />
+    <None Remove="Environments\Dev\PostDeployment\0006 - dbo.Products.sql" />
+    <None Remove="Migrations\202210091216 - Create tables.sql" />
+    <None Remove="PostDeployment\202210091355 - pmc.Brand_CreateBrand.StoredProcedure.sql" />
+    <None Remove="PostDeployment\202210091356 - pmc.Brand_DeleteBrand.StoredProcedure.sql" />
+    <None Remove="PostDeployment\202210091357 - pmc.Brand_GetAllBrands.StoredProcedure.sql" />
+    <None Remove="PostDeployment\202210091358 - pmc.Brand_GetBrandById.StoredProcedure.sql" />
+    <None Remove="PostDeployment\202210091359 - pmc.Brand_UpdateBrand.StoredProcedure.sql" />
+    <None Remove="PostDeployment\202210091400 - pmc.Catergory_GetAllCatergories.StoredProcedure.sql" />
+    <None Remove="PostDeployment\202210091401 - pmc.Catergory_GetCatergoriesByProductTypes.StoredProcedure.sql" />
+    <None Remove="PostDeployment\202210091402 - pmc.Catergory_GetCatergoryByName.StoredProcedure.sql" />
+    <None Remove="PostDeployment\202210091403 - pmc.Product_CreateProduct.StoredProcedure.sql" />
+    <None Remove="PostDeployment\202210091404 - pmc.Product_CreateProductInfo.StoredProcedure.sql" />
+    <None Remove="PostDeployment\202210091405 - pmc.Product_CreateProductType.StoredProcedure.sql" />
+    <None Remove="PostDeployment\202210091406 - pmc.Product_GetProductById.StoredProcedure.sql" />
+    <None Remove="PostDeployment\202210091407 - pmc.Product_GetProductsProductTypes.StoredProcedure.sql" />
+    <None Remove="PostDeployment\202210091408 - pmc.Product_UpdateProductsTypes.StoredProcedure.sql" />
+    <None Remove="PreDeployment\202210091353 - Create Stored Procedures.sql" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Scripts\202210091216 - Create tables.sql" />
+    <EmbeddedResource Include="Environments\Dev\PostDeployment\0001 - Add Brands.sql" />
+    <EmbeddedResource Include="Environments\Dev\PostDeployment\0002 - Add Catergories.sql" />
+    <EmbeddedResource Include="Environments\Dev\PostDeployment\0003 - dbo.ProductTypes.sql" />
+    <EmbeddedResource Include="Environments\Dev\PostDeployment\0004 - dbo.ProductInfo.sql" />
+    <EmbeddedResource Include="Environments\Dev\PostDeployment\0005 - dbo.Products_ProductTypes.sql" />
+    <EmbeddedResource Include="Environments\Dev\PostDeployment\0006 - dbo.Products.sql" />
+    <EmbeddedResource Include="PostDeployment\202210091355 - pmc.Brand_CreateBrand.StoredProcedure.sql" />
+    <EmbeddedResource Include="PostDeployment\202210091356 - pmc.Brand_DeleteBrand.StoredProcedure.sql" />
+    <EmbeddedResource Include="PostDeployment\202210091357 - pmc.Brand_GetAllBrands.StoredProcedure.sql" />
+    <EmbeddedResource Include="PostDeployment\202210091358 - pmc.Brand_GetBrandById.StoredProcedure.sql" />
+    <EmbeddedResource Include="PostDeployment\202210091359 - pmc.Brand_UpdateBrand.StoredProcedure.sql" />
+    <EmbeddedResource Include="PostDeployment\202210091400 - pmc.Catergory_GetAllCatergories.StoredProcedure.sql" />
+    <EmbeddedResource Include="PostDeployment\202210091401 - pmc.Catergory_GetCatergoriesByProductTypes.StoredProcedure.sql" />
+    <EmbeddedResource Include="PostDeployment\202210091402 - pmc.Catergory_GetCatergoryByName.StoredProcedure.sql" />
+    <EmbeddedResource Include="PostDeployment\202210091403 - pmc.Product_CreateProduct.StoredProcedure.sql" />
+    <EmbeddedResource Include="PostDeployment\202210091404 - pmc.Product_CreateProductInfo.StoredProcedure.sql" />
+    <EmbeddedResource Include="PostDeployment\202210091405 - pmc.Product_CreateProductType.StoredProcedure.sql" />
+    <EmbeddedResource Include="PostDeployment\202210091406 - pmc.Product_GetProductById.StoredProcedure.sql" />
+    <EmbeddedResource Include="PostDeployment\202210091407 - pmc.Product_GetProductsProductTypes.StoredProcedure.sql" />
+    <EmbeddedResource Include="PostDeployment\202210091408 - pmc.Product_UpdateProductsTypes.StoredProcedure.sql" />
+    <EmbeddedResource Include="PreDeployment\202210091216 - Create tables.sql" />
+    <EmbeddedResource Include="PreDeployment\202210091353 - Create Stored Procedures.sql" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="dbup-sqlserver" Version="4.6.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="6.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.Development.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="appsettings.Release.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>
