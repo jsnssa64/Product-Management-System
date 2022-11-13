@@ -1,4 +1,3 @@
-USE [ProductManagementCore]
 GO
 SET IDENTITY_INSERT [dbo].[Brands] ON 
 
@@ -10,5 +9,6 @@ INSERT [dbo].[Brands] ([Id], [Name]) VALUES (5, N'Mr Kipling')
 INSERT [dbo].[Brands] ([Id], [Name]) VALUES (11, N'Qourn')
 INSERT [dbo].[Brands] ([Id], [Name]) VALUES (2, N'Sainsburys')
 INSERT [dbo].[Brands] ([Id], [Name]) VALUES (3, N'Tesco')
+INSERT [dbo].[Brands] ([Id], [Name]) VALUES (45, N'Nesco')
 SET IDENTITY_INSERT [dbo].[Brands] OFF
 GO

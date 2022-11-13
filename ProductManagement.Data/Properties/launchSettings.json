@@ -1,0 +1,30 @@
+{
+  "profiles": {
+    "WSL": {
+      "commandName": "WSL2",
+      "environmentVariables": {
+        "Environment": "Development"
+      },
+      "distributionName": ""
+    },
+    "(Dev) ProductManagement.Data": {
+      "commandName": "Project",
+      "environmentVariables": {
+        " ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "ProductManagement.Data": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Default"
+      }
+    },
+    "(Rel) ProductManagement.Data": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Release",
+        "Environment": "Rel"
+      }
+    }
+  }
+}

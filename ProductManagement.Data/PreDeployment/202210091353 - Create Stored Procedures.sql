@@ -1,4 +1,5 @@
-USE [ProductManagementCore]
+/****** Object:  Create PMC Schema ******/
+CREATE SCHEMA [pmc]
 GO
 /****** Object:  StoredProcedure [pmc].[Brand_CreateBrand]    Script Date: 09/10/2022 13:53:36 ******/
 SET ANSI_NULLS ON

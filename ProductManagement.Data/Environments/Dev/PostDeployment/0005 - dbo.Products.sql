@@ -1,4 +1,3 @@
-USE [ProductManagementCore]
 GO
 SET IDENTITY_INSERT [dbo].[Products] ON 
 

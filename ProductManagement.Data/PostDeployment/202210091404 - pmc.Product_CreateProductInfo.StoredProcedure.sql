@@ -1,5 +1,3 @@
-USE [ProductManagementCore]
-GO
 /****** Object:  StoredProcedure [pmc].[Product_CreateProductInfo]    Script Date: 09/10/2022 13:42:52 ******/
 SET ANSI_NULLS ON
 GO

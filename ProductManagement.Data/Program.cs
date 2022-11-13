@@ -1,4 +1,5 @@
 ﻿using DbUp;
+using DbUp.Helpers;
 using Microsoft.Extensions.Configuration;
 using ProductManagement.Data;
 using System.Reflection;
@@ -15,36 +16,33 @@ var configuration = new ConfigurationBuilder()
 
 var connectionString = configuration.GetConnectionString("connection");
 
-//EnsureDatabase.For.SqlDatabase(connectionString);
+EnsureDatabase.For.SqlDatabase(connectionString);
 Console.WriteLine("\nIMPORTANT: Please ensure your scripts are EMBEDDED in the executable.");
 
 //  Base 
 var baseNamespace = Assembly.GetExecutingAssembly().GetName().Name;
+
 //  Environment
-var environmentsNamespace = baseNamespace + ".Environments";
+var environmentsNamespace = $"{baseNamespace}.Environments.{configuration["DataVariable.Environment"]}";
 
 var deploymentNamespaces = configuration.GetSection(nameof(DeploymentNamespaces))
                                     .Get<DeploymentNamespaces>();
 
-var Env = configuration["Environment"];
-
 //  Variables
-var variables = configuration.GetSection("variables")
-                            .GetChildren()
-                            .ToDictionary(x => x.Key, x => x.Value);
+var variables = configuration.AsEnumerable().Where(x => x.Key.StartsWith("DataVariable.")).ToDictionary(x => x.Key.Replace("DataVariable.", ""), x => x.Value);
 foreach (var pair in variables)
 {
     Console.WriteLine($"{pair.Key} = \"{pair.Value}\"");
 }
 
-//  Base Predeployments
+//  Base Schema Build
 string preDeploymentScriptsPath = baseNamespace + ".PreDeployment";
 RunMigrations(connectionString, preDeploymentScriptsPath, variables);
 
 //  Environment Pre-Deployments (Optional)
-if (deploymentNamespaces != null)
+if (deploymentNamespaces != null && !string.IsNullOrEmpty(deploymentNamespaces.PreDeploymentNamespace))
 {
-    RunMigrations(connectionString, deploymentNamespaces.PreDeploymentNamespace, variables);
+    RunMigrations(connectionString, environmentsNamespace + deploymentNamespaces.PreDeploymentNamespace, variables);
 }
 
 //  Base Migrations
@@ -54,33 +52,52 @@ RunMigrations(connectionString, migrationScriptsPath, variables);
 //  Base Post Deployments
 string postDeploymentScriptsPath = baseNamespace + ".PostDeployment";
 RunMigrations(connectionString, postDeploymentScriptsPath, variables);
+RunMigrations(connectionString, baseNamespace, variables, true);
 
 //  Optional Environment Post Deployments
-if (deploymentNamespaces != null)
+if (deploymentNamespaces != null && !string.IsNullOrEmpty(deploymentNamespaces.PostDeploymentNamespace))
 {
-    RunMigrations(connectionString, deploymentNamespaces.PreDeploymentNamespace, variables);
+    RunMigrations(connectionString, environmentsNamespace + deploymentNamespaces.PostDeploymentNamespace, variables);
+    RunMigrations(connectionString, environmentsNamespace, variables, true);
 }
 
-//await host.RunAsync();
 return 0;
 
 static int RunMigrations(string connectionString, 
     string @namespace,
-    Dictionary<string, string> variables)
+    Dictionary<string, string> variables,
+    bool alwaysRun = false)
 {
+    if (alwaysRun)
+    {
+        @namespace = $"{@namespace}.alwaysrun";
+    }
+
     Console.WriteLine($"Executing scripts in {@namespace}");
-    var upgrader =
+
+    var upgraderBuilder =
         DeployChanges.To
             .SqlDatabase(connectionString)
             .WithVariables(variables)
+            .WithTransactionPerScript()
             .WithScriptsEmbeddedInAssembly(Assembly.GetExecutingAssembly(), file =>
             {
-                return file
-                        .ToLower()
-                        .StartsWith(@namespace.ToLower());
-            })
-            .LogToConsole()
-            .Build();
+                file = file.ToLower();
+
+                var test = file
+                            .StartsWith(@namespace.ToLower())
+                            && alwaysRun == file.Contains($".alwaysrun");
+
+                return test;
+            });
+
+    if(alwaysRun)
+    {
+        upgraderBuilder.JournalTo(new NullJournal());
+    }
+
+    var upgrader = upgraderBuilder.LogToConsole()
+                        .Build();
 
     var result = upgrader.PerformUpgrade();
 

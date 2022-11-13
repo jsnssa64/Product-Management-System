@@ -8,12 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Environments\Dev\AlwaysRun\TestOne.sql" />
     <None Remove="Environments\Dev\PostDeployment\0001 - Add Brands.sql" />
     <None Remove="Environments\Dev\PostDeployment\0002 - Add Catergories.sql" />
     <None Remove="Environments\Dev\PostDeployment\0003 - dbo.ProductTypes.sql" />
     <None Remove="Environments\Dev\PostDeployment\0004 - dbo.ProductInfo.sql" />
-    <None Remove="Environments\Dev\PostDeployment\0005 - dbo.Products_ProductTypes.sql" />
-    <None Remove="Environments\Dev\PostDeployment\0006 - dbo.Products.sql" />
+    <None Remove="Environments\Dev\PostDeployment\0005 - dbo.Products.sql" />
+    <None Remove="Environments\Dev\PostDeployment\0006 - dbo.Products_ProductTypes.sql" />
     <None Remove="Migrations\202210091216 - Create tables.sql" />
     <None Remove="PostDeployment\202210091355 - pmc.Brand_CreateBrand.StoredProcedure.sql" />
     <None Remove="PostDeployment\202210091356 - pmc.Brand_DeleteBrand.StoredProcedure.sql" />
@@ -29,16 +30,18 @@
     <None Remove="PostDeployment\202210091406 - pmc.Product_GetProductById.StoredProcedure.sql" />
     <None Remove="PostDeployment\202210091407 - pmc.Product_GetProductsProductTypes.StoredProcedure.sql" />
     <None Remove="PostDeployment\202210091408 - pmc.Product_UpdateProductsTypes.StoredProcedure.sql" />
+    <None Remove="PreDeployment\202210091300 - Create UserDefinedTableType.sql" />
     <None Remove="PreDeployment\202210091353 - Create Stored Procedures.sql" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Environments\Dev\AlwaysRun\TestOne.sql" />
     <EmbeddedResource Include="Environments\Dev\PostDeployment\0001 - Add Brands.sql" />
     <EmbeddedResource Include="Environments\Dev\PostDeployment\0002 - Add Catergories.sql" />
     <EmbeddedResource Include="Environments\Dev\PostDeployment\0003 - dbo.ProductTypes.sql" />
     <EmbeddedResource Include="Environments\Dev\PostDeployment\0004 - dbo.ProductInfo.sql" />
-    <EmbeddedResource Include="Environments\Dev\PostDeployment\0005 - dbo.Products_ProductTypes.sql" />
-    <EmbeddedResource Include="Environments\Dev\PostDeployment\0006 - dbo.Products.sql" />
+    <EmbeddedResource Include="Environments\Dev\PostDeployment\0006 - dbo.Products_ProductTypes.sql" />
+    <EmbeddedResource Include="Environments\Dev\PostDeployment\0005 - dbo.Products.sql" />
     <EmbeddedResource Include="PostDeployment\202210091355 - pmc.Brand_CreateBrand.StoredProcedure.sql" />
     <EmbeddedResource Include="PostDeployment\202210091356 - pmc.Brand_DeleteBrand.StoredProcedure.sql" />
     <EmbeddedResource Include="PostDeployment\202210091357 - pmc.Brand_GetAllBrands.StoredProcedure.sql" />
@@ -54,6 +57,7 @@
     <EmbeddedResource Include="PostDeployment\202210091407 - pmc.Product_GetProductsProductTypes.StoredProcedure.sql" />
     <EmbeddedResource Include="PostDeployment\202210091408 - pmc.Product_UpdateProductsTypes.StoredProcedure.sql" />
     <EmbeddedResource Include="PreDeployment\202210091216 - Create tables.sql" />
+    <EmbeddedResource Include="PreDeployment\202210091300 - Create UserDefinedTableType.sql" />
     <EmbeddedResource Include="PreDeployment\202210091353 - Create Stored Procedures.sql" />
   </ItemGroup>
 
@@ -79,6 +83,7 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
+    <Folder Include="AlwaysRun\" />
   </ItemGroup>
 
 </Project>
