@@ -1,0 +1,60 @@
+# ProductInventoryAPI - 
+# ProductManagerAPI 
+# ProductManagerUI
+name: dotnet package
+
+on:
+  workflow_call:
+    inputs:
+      test-value:
+        required: true
+        type: string
+    secrets:
+      envPAT:
+        required: true
+  push:
+    branches:
+      - "feature/**"
+  pull_request:
+    branches:
+      - "feature/**"
+
+env:
+  DAY_OF_WEEK: Monday
+
+jobs:
+  build:
+    env:
+      Greeting: Hello
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+    strategy:
+      matrix:
+        dotnet-version: ['3.0', '3.1.x', '5.0.x' ]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+      - name: Install dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+      - name: Test
+        run: dotnet test --no-restore --verbosity normal
+  staging:
+    name: Deploying Staging
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: First step
+        uses: 
+      - name: Second step
+        uses: 
+  production:
+    needs: staging
+    runs-on: ubuntu-latest

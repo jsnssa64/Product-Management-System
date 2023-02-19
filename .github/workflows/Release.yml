@@ -1,0 +1,29 @@
+# ProductInventoryAPI - 
+# ProductManagerAPI 
+# ProductManagerUI
+name: dotnet package
+
+on: 
+  workflow_call:
+    inputs:
+      test-value:
+        required: true
+        type: string
+    secrets:
+      envPAT:
+        required: true
+    
+
+jobs:
+  call-workflow-passing-data:
+    #???
+    strategy:
+      matrix:
+        target: [dev, stage, prod]
+    uses: folder/example-folder/reuseableworkflow.yml@main
+    with:
+      config-path:  .github/labeler
+      target: ${{ matrix.target }}
+    secrets:
+      envPAT: ${{ secrets.envPAT }}
+    # secrets: inherit
