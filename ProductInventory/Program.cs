@@ -13,6 +13,7 @@ builder.Services.AddMassTransit(config =>
 {
     config.UsingRabbitMq();
 });
+                       
 
 builder.Services.AddSingleton(eventStoreConnection);
 
