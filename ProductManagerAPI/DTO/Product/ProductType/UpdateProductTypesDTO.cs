@@ -7,6 +7,6 @@ namespace ProductManager.DTO.Product.ProductType
     {
         [Required]
         public Guid ProductId { get; set; }
-        public IEnumerable<model.ProductType> ProductTypes { get; set; }
+        public IEnumerable<model.ProductType>? ProductTypes { get; set; }
     }
 }
