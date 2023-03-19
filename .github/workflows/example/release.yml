@@ -25,5 +25,6 @@ jobs:
       config-path:  .github/labeler
       target: ${{ matrix.target }}
     secrets:
+      # secrets can be created in github project
       envPAT: ${{ secrets.envPAT }}
     # secrets: inherit

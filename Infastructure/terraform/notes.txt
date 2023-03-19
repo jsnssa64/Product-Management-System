@@ -1,5 +1,5 @@
 Note:
-    tfstate file must be stored in a secure remote database if every used in 
+    tfstate file must be stored in a secure remote database if ever used in 
     public domain as it contains all sensitive information of your resources 
     including any environment variables
 
@@ -21,8 +21,8 @@ Terraform tfvars
     -   terraform.tfvars  / terraform.tfvars.json
 Auto tfvars
     -   variable.auto.tfvars
-Vars Flags
-    -   terrafirn apply -var "XXX=XXX"
+Command line variable Flags
+    -   terraform apply -var "XXX=XXX"
 
 
     Reference Attribute of resource Output 
@@ -79,7 +79,7 @@ resource "random_pet" "pet" {
     }
 }
 
-For Database that stores immutable data:
+For Database which ordinarily contains immutable data you'd avoid destroying:
 
 resource "mysql_sqlselfhosted" "productmanagementDb" {
     connectionstring ...

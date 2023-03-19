@@ -1,0 +1,49 @@
+
+  # Checkout different repo example:
+# - name: Checkout tools repo
+#   uses: actions/checkout@v3
+#   with:
+#     repository: my-org/my-tools
+#   path: my-tools
+
+
+  # Run reuseable yaml file using matrix strategy
+name: dotnet package
+
+on: 
+  workflow_call:
+    inputs:
+      test-value:
+        required: true
+        type: string
+    secrets:
+      envPAT:
+        required: true   
+
+jobs:
+  call-workflow-passing-data:
+    # Run 'uses' or 'steps' x amount of times using each value in every combination
+    strategy:
+      matrix:
+        # Variables - can be used anywhere in this workflow
+        target: [dev, stage, prod]
+        data: [stage1, stage2]
+        # { target: dev, data: stage1 }
+        # { target: dev, data: stage2 }
+        # { target: stage, data: stage1 }
+        # { target: stage, data: stage2 }
+        # { target: prod, data: stage1 }
+        # { target: prod, data: stage2 }
+        # in short a for loop and then a loop whithin a loop per variabel
+        os: [ ubuntu-22.04, ubuntu-20.04 ]
+    #   example:
+    # runs-on: ${{ matrix.os }}
+    uses: folder/example-folder/reuseableworkflow.yml@main
+    with:
+      config-path: .github/randomfolder
+      # pass current target e.g dev to folder
+      target: ${{ matrix.target }}
+    secrets:
+      # secrets can be created in github project
+      envPAT: ${{ secrets.envPAT }}
+    # secrets: inherit
