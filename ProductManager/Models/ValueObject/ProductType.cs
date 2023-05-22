@@ -1,7 +1,7 @@
 ﻿namespace ProductManager.Models.ValueObject
 {
-    public class ProductType
-    {
+    public record ProductType {
         public string Name { get; set; }
+
     }
 }

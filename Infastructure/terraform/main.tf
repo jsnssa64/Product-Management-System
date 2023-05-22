@@ -27,3 +27,7 @@ resource "digitalocean_project" "infra-bootstrap-tools" {
   purpose     = "IoT"
   environment = "Development"
 }
+
+resource "digitalocean_droplet" "web" {
+  
+}

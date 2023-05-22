@@ -1,19 +1,27 @@
-﻿using System.Collections;
-using System.Data;
-using System.Reflection.Metadata.Ecma335;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-
-namespace ProductManager.Data
+﻿namespace ProductManager.Data
 {
     public class Paging : DataEntity
     {
-        public int Page { get; set; } = 1;
+        public int CurrentPage { get; set; } = 1;
         public int MaxItemsPerPage { get; set; } = 20;
+        public int TotalRecords { get; set; }
 
-        protected override List<string> Fields { get; set; } = new()
+        private int? _nextPage;
+        private int? _previousPage;
+        
+
+        public void SetState()
         {
-            "Page",
-            "MaxItemsPerPage"
-        };
+            var total = CurrentPage * MaxItemsPerPage;
+
+            _previousPage = CurrentPage == 1 ? null : CurrentPage--;
+            _nextPage = total >= TotalRecords ? null : CurrentPage++;
+        }
+
+        protected override void AddFields()
+        {
+            Fields.Add("CurrentPage");
+            Fields.Add("MaxItemsPerPage");
+        }
     }
 }

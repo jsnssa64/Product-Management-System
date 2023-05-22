@@ -1,13 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
-using ProductManager.DTO.Brand;
+using ProductManager.DTO.Pagination;
 using ProductManager.DTO.Product;
-using ProductManager.Models;
-using ProductManager.Models.Brand;
-using ProductManager.Repository;
+using ProductManager.Extensions;
+using ProductManager.Mapper;
 using ProductManager.Repository.Product;
+using ProductManager.Result.Product;
 using ProductManager.Services;
-using Brand = ProductManager.Models.Brand.Brand;
 
 namespace ProductManager.Controllers
 {
@@ -15,33 +14,75 @@ namespace ProductManager.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private readonly IProductRepository _productRepository;
         private readonly ProductService _productService;
 
         private readonly ILogger<ProductController> _logger;
-        public ProductController(ILogger<ProductController> logger, ProductService productService, IProductRepository productRepository)
+        public ProductController(ILogger<ProductController> logger, ProductService productService)
         {
             _logger = logger;
             _productService = productService;
-            _productRepository = productRepository;
         }
 
         [HttpGet]
-        public async Task<IReadOnlyList<Models.Brand.Brand>> Get() => await _productRepository.GetAll();
+        public async Task<GetAllProductResponse> GetAll(PaginationDTO? pagination)
+        {
+            var paging = pagination.ToPaging();
+            var allProductsDto = await _productService.GetProductsWithPagination(paging);
+            return allProductsDto.ToResponse(paging);
+        }
 
         [HttpGet("GetByProductId/{id}")]
-        public async Task<Models.Brand.Brand> GetByProductId(Guid Id) => await _productRepository.GetProduct(Id);
+        public async Task<ProductDetailsResponse> GetByProductId(Guid Id)
+        {
+            var product = await _productService.GetProduct(Id);
+            return product.ToResponse();
+        } 
 
         [HttpPost("Update")]
-        public async Task<int> Update([FromBody]UpdateProduct product)
+        public async Task<IActionResult> Update([FromBody]UpdateProductDto updateProductDto)
         {
-            return await _productService.UpdateAsync(product);
+
+            var getProduct = await _productService.GetProduct(updateProductDto.Id);
+            var product = updateProductDto.ToProduct(getProduct);
+            var result = await _productService.UpdateAsync(product);
+
+            return result.Match<IActionResult>(p =>
+                {
+                    var productResponse = product.ToResponse();
+                    return Ok(productResponse);
+                },
+            exception =>
+            {
+                if (exception is ValidationException validationException)
+                {
+                    return BadRequest(validationException.ToProblemDetails());
+                }
+
+                return StatusCode(500);
+            });
         }
 
         [HttpPost("Create/{Name}")]
-        public async Task<int> Create(CreateProduct product)
+        public async Task<IActionResult> Create(CreateProductDto createProductDto)
         {
-            return await _productService.CreateAsync(product);
+            var product = createProductDto.ToProduct();
+            var result = await _productService.CreateAsync(product);
+
+
+            return result.Match<IActionResult>(p =>
+                {
+                    var productResponse = product.ToResponse();
+                    return CreatedAtAction("GetByProductId", new { productResponse.Id }, productResponse);
+                },
+                exception =>
+                {
+                    if (exception is ValidationException validationException)
+                    {
+                        return BadRequest(validationException.ToProblemDetails());
+                    }
+
+                    return StatusCode(500);
+                });
         }
         
 
@@ -53,8 +94,8 @@ namespace ProductManager.Controllers
         [HttpDelete]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var data = await _productService.DeleteAsync(id);
-            return Ok(data);
+            await _productService.DeleteAsync(id);
+            return Ok();
         }
     }
 }

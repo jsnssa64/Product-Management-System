@@ -45,7 +45,7 @@ if (deploymentNamespaces != null && !string.IsNullOrEmpty(deploymentNamespaces.P
     RunMigrations(connectionString, environmentsNamespace + deploymentNamespaces.PreDeploymentNamespace, variables);
 }
 
-//  Base Migrations
+//  Base Migrations?????
 var migrationScriptsPath = baseNamespace + ".Migrations";
 RunMigrations(connectionString, migrationScriptsPath, variables);
 
@@ -54,7 +54,7 @@ string postDeploymentScriptsPath = baseNamespace + ".PostDeployment";
 RunMigrations(connectionString, postDeploymentScriptsPath, variables);
 RunMigrations(connectionString, baseNamespace, variables, true);
 
-//  Optional Environment Post Deployments
+//  Environment Post-Deployments (Optional)
 if (deploymentNamespaces != null && !string.IsNullOrEmpty(deploymentNamespaces.PostDeploymentNamespace))
 {
     RunMigrations(connectionString, environmentsNamespace + deploymentNamespaces.PostDeploymentNamespace, variables);

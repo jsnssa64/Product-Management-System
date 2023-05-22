@@ -1,9 +1,15 @@
-﻿using FluentValidation.Results;
+﻿using FluentValidation;
+using FluentValidation.Results;
+using LanguageExt.ClassInstances.Pred;
+using LanguageExt.Common;
 using ProductManager.Data;
+using ProductManager.DTO.Pagination;
 using ProductManager.DTO.Product;
 using ProductManager.Mapper;
 using ProductManager.Models.Product;
+using ProductManager.Models.Product.Behavioural;
 using ProductManager.Repository.Product;
+using ProductManager.Result.Product;
 using ProductManager.Validator;
 
 namespace ProductManager.Services
@@ -19,61 +25,70 @@ namespace ProductManager.Services
             _productValidator = productValidator;
         }
 
-        public async Task CreateAsync(CreateProduct createProduct)
+        
+        public async Task<AllProductsDto> GetProductsWithPagination(Paging paging)
         {
-            AllProducts allProducts = new AllProducts();
+            var allProductDto = await _productRepository.GetProductsWithPagination(paging);
 
-            while (nextPage is null)
-            {
-                allProducts.Products = await _productRepository.GetAll();
-                var productCount = allProducts.Products.Count(x => x.Title == createProduct.Title && x.Description == createProduct.Description);
-                if (productCount > 0)
-                {
-                    return;
-                }
-                
-                allProducts.Paging.NextPage();
-            }
-            products.Where
-            product = product.ToProduct(createProduct);
-
-            ValidationResult results = await _productValidator.ValidateAsync(product);
-
-            if (results == null)
-            {
-
-            }
-
-            await _productRepository.UpdateAsync(updateProduct);
+            return allProductDto;
         }
 
-        public async Task UpdateAsync(UpdateProduct updateProduct)
-        {
-            Product product = await _productRepository.GetProduct(updateProduct.Id);
-            product = product.ToProduct(updateProduct);
-
-            ValidationResult results = await _productValidator.ValidateAsync(product);
-
-            if (results == null)
-            {
-
-            }
-
-            await _productRepository.UpdateAsync(updateProduct);
-        }
-
-        public async Task DeleteAsync(int id)
+        public async Task<Product> GetProduct(Guid id)
         {
             var product = await _productRepository.GetProduct(id);
-            if (product == null)
+            return product;
+        }
+
+        public async Task<Result<bool>> CreateAsync(Product product)
+        {
+            ValidationResult validationResult = await _productValidator.ValidateAsync(product);
+
+            if (!validationResult.IsValid)
             {
-                //  do some exception 
-                return;
+                var exceptions = new ValidationException(validationResult.Errors);
+                return new Result<bool>(exceptions);
             }
 
-            UpdateProduct updateProduct = product.ToProductDTO();
-            updateProduct.Discontinue();
-            await _productRepository.UpdateAsync(product);
+            var allProducts = await _productRepository.GetAllProducts();
+
+
+            if (allProducts.Any(p => p.Equals(product)))
+            {
+                var message = "Product Already Exist";
+                return new Result<bool>(new ValidationException(message));
+            }
+            
+
+            return await _productRepository.CreateAsync(product);
+        }
+
+        public async Task<Result<bool>> UpdateAsync(Product product)
+        {
+
+            ValidationResult validationResult = await _productValidator.ValidateAsync(product);
+
+            if (!validationResult.IsValid)
+            {
+                var exceptions = new ValidationException(validationResult.Errors);
+                return new Result<bool>(exceptions);
+            }
+
+            return await _productRepository.UpdateAsync(product);
+        }
+
+        public async Task<Result<bool>> DeleteAsync(Guid id)
+        {
+            var product = await _productRepository.GetProduct(id);
+
+            if (product.DiscontinuedAt != null)
+            {
+                var message = "Product has already be discontinued";
+                return new Result<bool>(new ValidationException(message));
+            }
+
+            product.DiscontinuedAt = product.Discontinue();
+
+            return await _productRepository.UpdateAsync(product);
         }
     }
 }

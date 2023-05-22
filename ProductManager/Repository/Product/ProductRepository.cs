@@ -1,87 +1,79 @@
 ﻿using Dapper;
-using model = ProductManager.Models.Product;
-using System.Data;
-using System.Data.SqlClient;
 using ProductManager.Data;
 using ProductManager.DTO.Product;
+using System.Data;
+using System.Data.SqlClient;
+using model = ProductManager.Models.Product;
 
 namespace ProductManager.Repository.Product
 {
     public class ProductRepository : IProductRepository
     {
         private readonly IConfiguration _configuration;
+        public const string GetProductSP = "[pmc].[Product_GetProduct]";
+        public const string GetAllProductWithPaginationSP = "[pmc].[Product_GetAllProductsWithPagination]";
+        public const string CreateProductSP = "[pmc].[Product_CreateProduct]";
+        public const string UpdateProductSP = "[pmc].[Product_UpdateProduct]";
 
         public ProductRepository(IConfiguration configuration)
         {
             _configuration = configuration;
         }
 
-        public async Task<int> CreateAsync(string name)
+        public async Task<bool> CreateAsync(model.Product product)
         {
-            var procedure = "pmc.Brand_CreateBrand";
-
             using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
-                return await connection.ExecuteAsync(procedure, name, commandType: CommandType.StoredProcedure);
-
+                var result = await connection.ExecuteAsync(CreateProductSP, product, commandType: CommandType.StoredProcedure);
+                return result > 0;
             }
         }
 
-        public async Task<bool> UpdateAsync(model.Product updateBrand)
+        public async Task<bool> UpdateAsync(model.Product product)
         {
-            var procedure = "pmc.Product_UpdateProduct";
-
             using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
-                return await connection.ExecuteAsync(procedure, updateBrand, commandType: CommandType.StoredProcedure);
-
+                var result = await connection.ExecuteAsync(UpdateProductSP, product, commandType: CommandType.StoredProcedure);
+                return result > 0;
             }
         }
 
-        public async Task<model.Product> GetProduct(int id)
+        public async Task<model.Product> GetProduct(Guid id)
         {
-            var procedure = "pmc.Product_GetProductById";
-
             // Sing the Dapper Connection string we open a connection to the database
             using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
 
-                return await connection.QuerySingleAsync<model.Product>(procedure, id, commandType: CommandType.StoredProcedure);
+                return await connection.QuerySingleAsync<model.Product>(GetProductSP, id, commandType: CommandType.StoredProcedure);
             }
         }
-
-        public async Task<int> DeleteAsync(int id)
+        
+        public async Task<AllProductsDto> GetProductsWithPagination(Paging? paging)
         {
-            var procedure = "pmc.Product_DeleteProduct";
-
-            using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
-            {
-                connection.Open();
-                return await connection.ExecuteAsync(procedure, id, commandType: CommandType.StoredProcedure);
-            }
-        }
-
-        public async Task<IEnumerable<model.Product>> GetAll(Paging? paging)
-        {
+            //  Should Receive MaxItemsPerPage, CurrentPage
             paging ??= new Paging();
 
-            var parameters = new DynamicParameters(
-            {
-                ProductId = 1,
-                Test = 2
-            });
-            var procedure = "pmc.Product_GetAllProducts";
+            var parameters = new DynamicParameters(paging.GetKeyValuePair());
 
             // Sing the Dapper Connection string we open a connection to the database
             using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
 
-                return await connection.QueryAsync<model.Product>(procedure, commandType: CommandType.StoredProcedure);
+                using var query = await connection.QueryMultipleAsync(GetAllProductWithPaginationSP, commandType: CommandType.StoredProcedure, param: parameters)
+                    .ConfigureAwait(false);
+
+                //  Not result, must be just for repo model
+                var result = new AllProductsDto();
+                result.Products.ToList().AddRange((await query.ReadAsync<model.Product>()
+                        .ConfigureAwait(false))
+                        .AsList());
+                result.TotalRecordCount = await query.ReadSingleAsync<int>().ConfigureAwait(false);
                 
+                return result;
             }
         }
     }

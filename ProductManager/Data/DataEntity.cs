@@ -2,14 +2,23 @@
 {
     public abstract class DataEntity
     {
-        protected abstract List<string> Fields { get; set; }
+        public readonly List<string> Fields = new();
 
-        public Dictionary<string, object> Get()
+        protected DataEntity()
+        {
+            Fields.Add("LastModifiedAt");
+            Fields.Add("CreatedAt");
+        }
+
+        public DateTime CreatedAt { get; set; }
+        public DateTime LastModifiedAt { get; set; } = DateTime.UtcNow;
+
+        public Dictionary<string, object> GetKeyValuePair()
         {
             var dictionary = new Dictionary<string, object>();
             foreach (var field in Fields)
             {
-                var property = this.GetType().GetProperty(field);
+                var property = GetType().GetProperty(field);
                 var value = property?.GetValue(this, null);
                 if (value != null)
                     dictionary.Add(field, value);
@@ -18,5 +27,7 @@
             }
             return dictionary;
         }
+
+        protected abstract void AddFields();
     }
 }
