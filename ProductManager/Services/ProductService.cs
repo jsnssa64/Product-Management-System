@@ -1,15 +1,10 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
-using LanguageExt.ClassInstances.Pred;
 using LanguageExt.Common;
 using ProductManager.Data;
-using ProductManager.DTO.Pagination;
 using ProductManager.DTO.Product;
-using ProductManager.Mapper;
 using ProductManager.Models.Product;
-using ProductManager.Models.Product.Behavioural;
 using ProductManager.Repository.Product;
-using ProductManager.Result.Product;
 using ProductManager.Validator;
 
 namespace ProductManager.Services

@@ -6,6 +6,7 @@ namespace ProductManager.Repository.Product
 {
     public interface IProductRepository
     {
+        public Task<IEnumerable<model.Product>> GetAllProducts();
         public Task<AllProductsDto> GetProductsWithPagination(Paging paging);
 
         //  this will be very small so this should be details or add another endpoint called
