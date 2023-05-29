@@ -5,7 +5,7 @@ namespace ProductManager.Data
     public abstract class PagingEntity<T> where T : class  
     {
 
-        public int? CurrentPageIndex { get; set; }
+        public int CurrentPageIndex { get; set; }
         public int MaxItemsPerPage { get; set; }
         public int TotalRecords { get; set; }
         public int TotalPages { get; set; }

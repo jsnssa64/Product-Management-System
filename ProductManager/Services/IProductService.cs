@@ -1,9 +1,7 @@
 ﻿using LanguageExt.Common;
 using ProductManager.Data;
-using ProductManager.DTO.Pagination;
 using ProductManager.DTO.Product;
 using ProductManager.Models.Product;
-using ProductManager.Result.Product;
 
 namespace ProductManager.Services
 {

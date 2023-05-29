@@ -11,29 +11,29 @@ namespace ProductManager.Controllers
     public class BrandController : ControllerBase
     {
         private readonly IBrandRepository _brandRepository;
-        private BrandService BrandService { get; set; }
+        private IBrandService BrandService { get; }
 
         private readonly ILogger<BrandController> _logger;
-        public BrandController(ILogger<BrandController> logger, BrandService brandService, IBrandRepository brandRepository)
+        public BrandController(ILogger<BrandController> logger, IBrandService brandService, IBrandRepository brandRepository)
         {
             _logger = logger;
             BrandService = brandService;
             _brandRepository = brandRepository;
         }
 
-        [HttpGet]
-        public async Task<IActionResult<>> Get(GetAllBrand brand) => await _brandRepository.GetAll(paging);
+        //[HttpGet]
+        //public async Task<GetAllBrandResponse> GetAll(PaginationDTO? pagination) => await _brandRepository.GetAll(pagination.ToPaging());
 
-        [HttpGet("GetBrand/{name}")]
-        public async Task<Model.Brand> GetByBrand(string name) => await _brandRepository.GetBrand(name);
+        [HttpGet("Get/{name}")]
+        public async Task<Model.Brand> Get(string name) => await _brandRepository.GetBrand(name);
 
         [HttpPost("Update")]
-        public async Task<int> Update([FromBody]UpdateBrand updateBrand)
+        public async Task<int> Update(UpdateBrand updateBrand)
         {
             return await _brandRepository.UpdateAsync(updateBrand);
         }
 
-        [HttpPost("Create/{name}")]
+        [HttpPost("Create")]
         public async Task<int> Create(Brand brand)
         {
             return await _brandRepository.CreateAsync(brand.Name);
@@ -42,9 +42,9 @@ namespace ProductManager.Controllers
         /// <summary>
         /// This endpont deletes a product form the database by ID
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="brand"></param>
         /// <returns>Status for deletion</returns>
-        [HttpDelete]
+        [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> Delete(Brand brand)
         {
             var data = await _brandRepository.DeleteAsync(brand.Name);

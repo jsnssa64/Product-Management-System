@@ -1,12 +1,9 @@
-﻿using ProductManager.Result.Misc;
-
-namespace ProductManager.Result.Product
+﻿namespace ProductManager.Response.Product
 {
-    public class ProductBasicResponse
-    {
+    public record ProductBasicResponse {
         public Guid Id { get; set; }
-        public string Title { get; set; }
+        public string Title { get; set; } 
         public string Description { get; set; }
 
-    }
+    };
 }

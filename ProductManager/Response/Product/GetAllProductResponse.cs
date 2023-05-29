@@ -1,6 +1,6 @@
 ﻿using ProductManager.Data;
 
-namespace ProductManager.Result.Product
+namespace ProductManager.Response.Product
 {
     public class GetAllProductResponse
     {

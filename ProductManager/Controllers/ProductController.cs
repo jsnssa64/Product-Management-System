@@ -4,8 +4,7 @@ using ProductManager.DTO.Pagination;
 using ProductManager.DTO.Product;
 using ProductManager.Extensions;
 using ProductManager.Mapper;
-using ProductManager.Repository.Product;
-using ProductManager.Result.Product;
+using ProductManager.Response.Product;
 using ProductManager.Services;
 
 namespace ProductManager.Controllers
@@ -23,7 +22,7 @@ namespace ProductManager.Controllers
             _productService = productService;
         }
 
-        [HttpGet]
+        [HttpGet("GetAll")]
         public async Task<GetAllProductResponse> GetAll(PaginationDTO? pagination)
         {
             var paging = pagination.ToPaging();
@@ -31,7 +30,7 @@ namespace ProductManager.Controllers
             return allProductsDto.ToResponse(paging);
         }
 
-        [HttpGet("GetByProductId/{id}")]
+        [HttpGet("Get/{id}")]
         public async Task<ProductDetailsResponse> GetByProductId(Guid Id)
         {
             var product = await _productService.GetProduct(Id);
@@ -62,7 +61,7 @@ namespace ProductManager.Controllers
             });
         }
 
-        [HttpPost("Create/{Name}")]
+        [HttpPost("Create")]
         public async Task<IActionResult> Create(CreateProductDto createProductDto)
         {
             var product = createProductDto.ToProduct();
@@ -91,7 +90,7 @@ namespace ProductManager.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns>Status for deletion</returns>
-        [HttpDelete]
+        [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
             await _productService.DeleteAsync(id);

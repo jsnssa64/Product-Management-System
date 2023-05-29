@@ -1,11 +1,10 @@
-﻿using ProductManager.DTO.Product;
-using ProductManager.Models.Product;
+﻿using ProductManager.Data;
+using ProductManager.DTO.Pagination;
+using ProductManager.DTO.Product;
 using ProductManager.DTO.Product.Type;
+using ProductManager.Models.Product;
 using ProductManager.Models.ValueObject;
 using ProductManager.Response.Product;
-using ProductManager.Result.Product;
-using ProductManager.Data;
-using ProductManager.DTO.Pagination;
 
 namespace ProductManager.Mapper
 {

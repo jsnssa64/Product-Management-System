@@ -1,19 +1,31 @@
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using ProductManager.Data;
 using ProductManager.Repository.Brand;
+using ProductManager.Repository.Product;
 using ProductManager.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
+var config = builder.Configuration;
 
 builder.Services.AddControllers();
+
+builder.Services.AddHealthChecks()
+    .AddSqlServer(
+        config.GetConnectionString("DefaultConnection"));
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.CustomSchemaIds(type => type.ToString());
+});
 builder.Services.AddTransient<IProductRepository, ProductRepository>();
-builder.Services.AddTransient<BrandService>();
+builder.Services.AddTransient<IBrandRepository, BrandRepository>();
+builder.Services.AddTransient<IBrandService, BrandService>();
+builder.Services.AddSingleton<IDbConnectionFactory, SqlConnectionFactory>();
 
 var app = builder.Build();
-
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -31,6 +43,11 @@ else
 }
 
 app.UseAuthorization();
+app.MapHealthChecks("/_health", new HealthCheckOptions()
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
+//Dont forget to add limitation to who can access the health check -Nick mentions limiting it to a network similar to the vpn situation
 
 app.MapControllers();
 

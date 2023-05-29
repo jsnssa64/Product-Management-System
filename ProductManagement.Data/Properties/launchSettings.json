@@ -25,6 +25,9 @@
         "ASPNETCORE_ENVIRONMENT": "Release",
         "Environment": "Rel"
       }
+    },
+    "Docker": {
+      "commandName": "Docker"
     }
   }
 }
