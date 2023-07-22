@@ -5,7 +5,7 @@ namespace ProductManager.Data
     public interface IDbConnectionFactory
     {
 
-        Task<IDbConnection> CreateConnectionAsync();
+        IDbConnection CreateConnection();
         Task<IDbConnection> CreateOpenConnectionAsync();
     }
 }

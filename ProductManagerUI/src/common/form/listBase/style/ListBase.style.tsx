@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import ListBase from "./ListBase";
+import ListBase from "../ListBase";
 
 const Base = styled(ListBase)`
     color: hotpink;

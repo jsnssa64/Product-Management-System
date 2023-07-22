@@ -1,6 +1,6 @@
 import { Grid, List, styled } from '@mui/material';
 import * as React from 'react';
-import { GridContainer } from "./FormBase.style";
+import { GridContainer } from "../formBase/style/FormBase.style";
 
 type ListProps = {
     handleListBuild: (value: any, index: number) => JSX.Element;

@@ -1,6 +1,7 @@
-﻿using System.Data;
-using System.Data.Common;
+﻿using Microsoft.Extensions.Options;
+using System.Data;
 using System.Data.SqlClient;
+using ProductManager.Misc;
 
 namespace ProductManager.Data
 {
@@ -8,20 +9,20 @@ namespace ProductManager.Data
     {
         private readonly string _connectionString;
 
-        public SqlConnectionFactory(string connectionString)
+        public SqlConnectionFactory(IOptions<ConnectionStrings> connectionStringsOptions)
         {
-            _connectionString = connectionString;
+            _connectionString = connectionStringsOptions.Value.DefaultConnection; 
         }
 
-        public override async Task<IDbConnection> CreateConnectionAsync()
+        public override IDbConnection CreateConnection()
         {
             return new SqlConnection(_connectionString);
         }
 
         public override async Task<IDbConnection> CreateOpenConnectionAsync()
         {
-            SqlConnection connection = (SqlConnection)await CreateConnectionAsync();
-            connection.Open();
+            SqlConnection connection = (SqlConnection)CreateConnection();
+            await connection.OpenAsync();
 
             return connection;
         }

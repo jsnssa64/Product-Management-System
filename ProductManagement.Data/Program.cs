@@ -23,10 +23,8 @@ Console.WriteLine("\nIMPORTANT: Please ensure your scripts are EMBEDDED in the e
 var baseNamespace = Assembly.GetExecutingAssembly().GetName().Name;
 
 //  Environment
-var environmentsNamespace = $"{baseNamespace}.Environments.{configuration["DataVariable.Environment"]}";
+var environmentsNamespace = $"{baseNamespace}.Environments.{configuration["DataVariable.Environment"]}.";
 
-var deploymentNamespaces = configuration.GetSection(nameof(DeploymentNamespaces))
-                                    .Get<DeploymentNamespaces>();
 
 //  Variables
 var variables = configuration.AsEnumerable().Where(x => x.Key.StartsWith("DataVariable.")).ToDictionary(x => x.Key.Replace("DataVariable.", ""), x => x.Value);
@@ -36,28 +34,28 @@ foreach (var pair in variables)
 }
 
 //  Base Schema Build
-string preDeploymentScriptsPath = baseNamespace + ".PreDeployment";
+string preDeploymentScriptsPath = baseNamespace + "." + DeploymentNamespaces.PreDeployment;
 RunMigrations(connectionString, preDeploymentScriptsPath, variables);
 
 //  Environment Pre-Deployments (Optional)
-if (deploymentNamespaces != null && !string.IsNullOrEmpty(deploymentNamespaces.PreDeploymentNamespace))
+if (!string.IsNullOrEmpty(environmentsNamespace))
 {
-    RunMigrations(connectionString, environmentsNamespace + deploymentNamespaces.PreDeploymentNamespace, variables);
+    RunMigrations(connectionString, environmentsNamespace + DeploymentNamespaces.PreDeployment, variables);
 }
 
-//  Base Migrations?????
-var migrationScriptsPath = baseNamespace + ".Migrations";
+
+var migrationScriptsPath = baseNamespace + "." + DeploymentNamespaces.Migrations;
 RunMigrations(connectionString, migrationScriptsPath, variables);
 
 //  Base Post Deployments
-string postDeploymentScriptsPath = baseNamespace + ".PostDeployment";
+string postDeploymentScriptsPath = baseNamespace + "." + DeploymentNamespaces.PostDeployment;
 RunMigrations(connectionString, postDeploymentScriptsPath, variables);
 RunMigrations(connectionString, baseNamespace, variables, true);
 
 //  Environment Post-Deployments (Optional)
-if (deploymentNamespaces != null && !string.IsNullOrEmpty(deploymentNamespaces.PostDeploymentNamespace))
+if (!string.IsNullOrEmpty(environmentsNamespace))
 {
-    RunMigrations(connectionString, environmentsNamespace + deploymentNamespaces.PostDeploymentNamespace, variables);
+    RunMigrations(connectionString, environmentsNamespace + DeploymentNamespaces.PostDeployment, variables);
     RunMigrations(connectionString, environmentsNamespace, variables, true);
 }
 
@@ -68,9 +66,10 @@ static int RunMigrations(string connectionString,
     Dictionary<string, string> variables,
     bool alwaysRun = false)
 {
+    @namespace += ".";
     if (alwaysRun)
     {
-        @namespace = $"{@namespace}.alwaysrun";
+        @namespace = $"{@namespace}{DeploymentNamespaces.AlwaysRun}";
     }
 
     Console.WriteLine($"Executing scripts in {@namespace}");
@@ -86,7 +85,7 @@ static int RunMigrations(string connectionString,
 
                 var test = file
                             .StartsWith(@namespace.ToLower())
-                            && alwaysRun == file.Contains($".alwaysrun");
+                            && alwaysRun == file.Contains($".{DeploymentNamespaces.AlwaysRun}");
 
                 return test;
             });

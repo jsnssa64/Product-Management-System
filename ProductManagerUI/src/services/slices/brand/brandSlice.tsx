@@ -1,5 +1,5 @@
-import { IUpdateBrand } from "@Components/Brand/BrandModel";
-import { IBrand } from "@Data/brand/Brand";
+import IUpdateBrand from "@Components/Brand/BrandModel";
+import { IBrand } from "@Data/brand/IBrand";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export const brandSlice = createSlice({

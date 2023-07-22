@@ -1,10 +1,32 @@
-version: '3.7'
+version: '3.6'
 services:
-  db:
-    image: postgres
+  mssqldb:
+    image: mcr.microsoft.com/mssql/server:2022-latest
     restart: always
     environment:
-      POSTGRES_PASSWORD: Secret!Passw0rd
-      POSTGRES_USER: postgres
+      ACCEPT_EULA: Y
+      MSSQL_SA_PASSWORD: SecretPassw0rd
+      MSSQL_PID: Developer
     ports:
-        - 5432:5432
+      - 1433:1433
+  db-migrations:
+    build:
+      context: ProductManagement.Data/
+      dockerfile: ./docker/db-migrations
+    depends_on: 
+      - mssqldb
+    environment:
+      - DataVariable.Environment=Dev
+      - ConnectionStrings__connection=Server=mssqldb;Database=ProductManagementCore;User Id=SA;Password=SecretPassw0rd
+    restart: on-failure
+  productmanager-api:
+    build:
+      context: ProductManager/
+      dockerfile: ./Dockerfile
+    depends_on: 
+      - mssqldb
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=mssqldb;Database=ProductManagementCore;User Id=SA;Password=SecretPassw0rd
+    restart: on-failure
+    ports:
+      - "8090:80"

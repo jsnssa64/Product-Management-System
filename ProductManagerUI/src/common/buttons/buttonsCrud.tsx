@@ -1,6 +1,6 @@
 import { Button, ButtonGroup } from '@mui/material';
 import * as React from 'react'
-import { CRUDButtonModel } from './buttonsCrudModel';
+import { CRUDButtonModel } from './model/buttonsCrud.model';
 
 type ButtonCRUDProps = {
   model: CRUDButtonModel;

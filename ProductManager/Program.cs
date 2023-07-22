@@ -1,6 +1,7 @@
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using ProductManager.Data;
+using ProductManager.Misc;
 using ProductManager.Repository.Brand;
 using ProductManager.Repository.Product;
 using ProductManager.Services;
@@ -20,27 +21,34 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.CustomSchemaIds(type => type.ToString());
 });
+builder.Services.Configure<ConnectionStrings>(builder.Configuration.GetSection("ConnectionStrings"));
 builder.Services.AddTransient<IProductRepository, ProductRepository>();
 builder.Services.AddTransient<IBrandRepository, BrandRepository>();
 builder.Services.AddTransient<IBrandService, BrandService>();
 builder.Services.AddSingleton<IDbConnectionFactory, SqlConnectionFactory>();
 
 var app = builder.Build();
-
+app.UseSwagger();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseWhen(context => context.Request.Query.ContainsKey("trigger"), appBuilder => HandleBranchAndRejoin(appBuilder));
-
-    app.UseSwagger();
+    
     app.UseSwaggerUI();
 }
 else
 {
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "MyDotnet6App API v1");
+        options.RoutePrefix = string.Empty;
+    });
     app.UseExceptionHandler("/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+
 
 app.UseAuthorization();
 app.MapHealthChecks("/_health", new HealthCheckOptions()

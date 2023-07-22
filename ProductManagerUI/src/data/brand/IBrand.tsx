@@ -3,11 +3,6 @@ interface IBrand {
     Name: string
 }
 
-class Brand {
-    
-}
-
 export {
-    IBrand,
-    Brand
+    IBrand
 }

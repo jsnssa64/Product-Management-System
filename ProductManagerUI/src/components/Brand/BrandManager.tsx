@@ -4,12 +4,12 @@ import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "services/store/store";
 import * as Actions from "@Services/slices/brand/brandSlice";
-import CustomList from "@Common/form/ListBase";
-import * as Style from "@Components/Brand/BrandManager.style";
-import { IUpdateBrand } from "./BrandModel";
-import { IBrand } from "@Data/brand/Brand";
-import { ButtonModel, CRUDButtonModel } from "@Common/general/buttons/buttonsCrudModel";
-import ButtonsCRUD from "@Common/general/buttons/buttonsCrud";
+import * as Style from "@Components/Brand/style/BrandManager.style";
+import IUpdateBrand from "./BrandModel";
+import { IBrand } from "@Data/brand/IBrand";
+import { ButtonModel, CRUDButtonModel } from "@Common/buttons/model/buttonsCrud.model";
+import ButtonsCRUD from "@Common/buttons/buttonsCrud";
+import ListBase from "@Common/form/listBase/ListBase";
  
 
 class ButtonBuilder {
@@ -181,8 +181,8 @@ export default function BrandManager() {
                         {
                             formValues.CurrentValue
                         }
-                        <CustomList handleListBuild={handleListBuild} data={globalBrand}>
-                        </CustomList>
+                        <ListBase handleListBuild={handleListBuild} data={globalBrand}>
+                        </ListBase>
                     </Style.leftBox>
                     <Style.rightDivider orientation="vertical" variant="middle" flexItem/>
                 </Grid>

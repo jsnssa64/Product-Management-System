@@ -7,7 +7,7 @@ namespace ProductManager.Health
     {
         private readonly IDbConnectionFactory _dbConnectionFactory;
 
-        public ExampleDatabaseHealthCheck(IDbConnectionFactory dbConnectionFactory)
+        public ExampleDatabaseHealthCheck(DbConnectionFactory dbConnectionFactory)
         {
             _dbConnectionFactory = dbConnectionFactory;
         }
